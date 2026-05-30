@@ -1,0 +1,11 @@
+# cargo-audit 配置
+#
+# RUSTSEC-2023-0071 (rsa 0.9.x Marvin 时序侧信道攻击, medium 5.9)：经分析不适用本项目。
+# 依据：
+#   1. 本项目仅启用 sqlx 的 "postgres" 后端，未启用 "mysql"。
+#   2. rsa 仅经由 sqlx-mysql 间接声明，而 sqlx-mysql 未被激活——
+#  `cargo tree -i sqlx-mysql` 输出为空，证明其未参与编译，不在构建产物中。
+#   3. rsa 上游暂无修复版本（No fixed upgrade available）。
+# 复审条件：sqlx 上游移除 sqlx-macros-core 对 mysql 后端的传递声明后，删除本忽略项重扫。
+[advisories]
+ignore = ["RUSTSEC-2023-0071"]
