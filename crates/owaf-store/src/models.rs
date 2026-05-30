@@ -284,6 +284,61 @@ pub struct BotScoreLog {
 }
 
 /// 旧动作字符串归一（对齐 Go NormalizeAction）：block->intercept、log_only->observe。
+/// 黑/白名单 IP 条目（对齐 Go IPListEntry）。
+#[derive(Debug, Clone, FromRow, Serialize, Deserialize)]
+pub struct IpListEntry {
+    pub id: i64,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+    pub kind: String,
+    pub value: String,
+    pub note: String,
+    pub enabled: bool,
+}
+
+/// CVE 检测规则（对齐 Go waf.CVERuleModel）。
+#[derive(Debug, Clone, FromRow, Serialize, Deserialize)]
+pub struct CveRule {
+    pub id: i64,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+    pub cve_id: String,
+    pub category: String,
+    pub pattern: String,
+    pub target: String,
+    pub severity: String,
+    pub action: String,
+    pub enabled: bool,
+    pub description: String,
+    pub source: String,
+    pub approved: bool,
+    pub cvss_score: f64,
+    pub cwe_type: String,
+}
+
+/// CVE 同步运行记录（对齐 Go CVESyncLog）。
+#[derive(Debug, Clone, FromRow, Serialize, Deserialize)]
+pub struct CveSyncLog {
+    pub id: i64,
+    pub source: String,
+    pub status: String,
+    pub rules_added: i32,
+    pub error: String,
+    pub started_at: DateTime<Utc>,
+    pub finished_at: DateTime<Utc>,
+}
+
+/// 指纹聚合记录（对齐 Go FingerprintRecord）。
+#[derive(Debug, Clone, FromRow, Serialize, Deserialize)]
+pub struct FingerprintRecord {
+    pub id: i64,
+    pub ja3_hash: String,
+    pub browser: String,
+    pub count: i64,
+    pub last_seen: DateTime<Utc>,
+    pub is_known_good: bool,
+}
+
 pub fn normalize_action(action: &str) -> &str {
     match action {
         "block" => "intercept",

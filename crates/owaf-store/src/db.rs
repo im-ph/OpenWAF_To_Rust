@@ -232,6 +232,51 @@ CREATE TABLE IF NOT EXISTS bot_score_logs (
     action VARCHAR(32) NOT NULL DEFAULT '',
     details TEXT NOT NULL DEFAULT '',
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE TABLE IF NOT EXISTS ip_list_entries (
+    id BIGSERIAL PRIMARY KEY,
+ created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    deleted_at TIMESTAMPTZ,
+    kind VARCHAR(16) NOT NULL,
+    value VARCHAR(64) NOT NULL,
+    note VARCHAR(255) NOT NULL DEFAULT '',
+    enabled BOOLEAN NOT NULL DEFAULT true
+);
+CREATE TABLE IF NOT EXISTS cve_rules (
+    id BIGSERIAL PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    deleted_at TIMESTAMPTZ,
+    cve_id VARCHAR(32) NOT NULL DEFAULT '',
+    category VARCHAR(32) NOT NULL DEFAULT '',
+    pattern TEXT NOT NULL DEFAULT '',
+target VARCHAR(32) NOT NULL DEFAULT '',
+    severity VARCHAR(16) NOT NULL DEFAULT '',
+    action VARCHAR(16) NOT NULL DEFAULT 'drop',
+    enabled BOOLEAN NOT NULL DEFAULT false,
+    description TEXT NOT NULL DEFAULT '',
+    source VARCHAR(32) NOT NULL DEFAULT '',
+    approved BOOLEAN NOT NULL DEFAULT false,
+    cvss_score DOUBLE PRECISION NOT NULL DEFAULT 0,
+    cwe_type VARCHAR(32) NOT NULL DEFAULT ''
+);
+CREATE TABLE IF NOT EXISTS cve_sync_logs (
+    id BIGSERIAL PRIMARY KEY,
+  source VARCHAR(32) NOT NULL DEFAULT '',
+    status VARCHAR(16) NOT NULL DEFAULT '',
+    rules_added INT NOT NULL DEFAULT 0,
+    error VARCHAR(512) NOT NULL DEFAULT '',
+  started_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    finished_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE TABLE IF NOT EXISTS fingerprint_records (
+    id BIGSERIAL PRIMARY KEY,
+    ja3_hash VARCHAR(64) NOT NULL DEFAULT '',
+    browser VARCHAR(64) NOT NULL DEFAULT '',
+    count BIGINT NOT NULL DEFAULT 0,
+    last_seen TIMESTAMPTZ NOT NULL DEFAULT now(),
+    is_known_good BOOLEAN NOT NULL DEFAULT false
 );";
 
 impl Db {
